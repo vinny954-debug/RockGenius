@@ -50,4 +50,4 @@ python -m pytest test/
 
 ## Licence
 
-GPL-2.0-or-later, like Rockbox, whose plugin API this builds on. See [LICENSE](LICENSE).
+MIT. Use it, change it, share it, sell it. Just keep the copyright notice and the [LICENSE](LICENSE) text with it. The one exception is `test/intlua/rockbox_luaconf.h`, which is adapted from Rockbox and stays GPL-2.0-or-later.

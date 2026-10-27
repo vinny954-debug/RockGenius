@@ -2,6 +2,7 @@
 
 ## 3.0.0
 
+- Licensed under MIT.
 - Play now starts the playlist itself with Rockbox's playlist API (`playlist_create`, then `playlist_start`). It no longer needs a patched Rockbox. It only falls back to writing `/.rockbox/rockgenius_play.txt` if that fails.
 - Genius from now playing has a submenu:
   - More like this

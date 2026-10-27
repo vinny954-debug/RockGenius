@@ -18,7 +18,7 @@
   truncating operators). No floats anywhere; use idiv() / umod().
 
   Install: copy to /.rockbox/rocks/apps/rockgenius.lua
-  Licence: GPL-2.0-or-later. https://github.com/vinny954-debug/rockgenius
+  Licence: MIT (see LICENSE). https://github.com/vinny954-debug/rockgenius
 ]]
 
 local VERSION  = "3.0.0"

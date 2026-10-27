@@ -1,5 +1,8 @@
 
-/* ---- appended by test/intlua/build.sh: Rockbox "Rocklua integer patch" ---- */
+/* ---- appended by test/intlua/build.sh: Rockbox "Rocklua integer patch" ----
+ * Adapted from Rockbox apps/plugins/lua/luaconf.h (tag v4.0-final).
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ * (The rest of RockGenius is MIT; see LICENSE.) */
 #undef LUA_NUMBER_DOUBLE
 #undef LUA_NUMBER
 #define LUA_NUMBER int
