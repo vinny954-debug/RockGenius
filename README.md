@@ -4,6 +4,8 @@ RockGenius makes "Genius"-style playlists on a Rockbox player, on the player its
 
 ![RockGenius on an iPod Video](docs/screenshot.png)
 
+*Screens from version 2 on my iPod Video. Version 3 groups the menu into Genius, Moods, Workouts, Discovery, Mood dial and Tools, and the "Genius" entry in the Rockbox main menu is from my own build. On stock Rockbox you open it from Plugins or Shortcuts.*
+
 ## Features
 
 - Genius from the song that's playing:
