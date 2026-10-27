@@ -31,6 +31,8 @@ RockGenius makes "Genius"-style playlists on a Rockbox player, on the player its
 
 ## Install
 
+I've only tested it on my own iPod Video 5.5G running Rockbox 4.0. Other Rockbox players with the Lua plugin should work, but nobody has tried them yet. If you run it on something else, open an issue and say how it went.
+
 Copy `rockgenius.lua` to `/.rockbox/rocks/apps/` on the player. Build the database (Settings > General Settings > Database > Initialize Now). Then open Plugins > Applications > rockgenius.lua.
 
 The [guide](docs/GUIDE.md) covers the whole setup:
