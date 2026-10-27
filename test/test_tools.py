@@ -177,3 +177,27 @@ def test_bpm_tag_roundtrip_and_journal(tmp_path, monkeypatch):
     assert bpm_tag.unfinished_writes() == []
     bpm_tag.mark_done(f)
     assert bpm_export.norm(f) in {bpm_export.norm(p) for p in bpm_tag.load_done("none.csv")}
+
+
+@pytest.mark.parametrize("engine", ENGINES)
+def test_record_size_ignores_header_datasize(tmp_path, engine):
+    """tagcache.c's master datasize also counts the tag files (it sizes the RAM
+    cache), so the record size has to come from the file length."""
+    lib = build(tmp_path / "lib", 500)
+    idx = (lib.rb / "database_idx.tcd").read_bytes()
+    datasize, entries = struct.unpack_from("<ii", idx, 4)
+    assert datasize != 24 + entries * 96                      # realistic header
+    assert bpm_export.Database(lib.rb).recsize == 96
+    lib.run([QUIT], engine=engine)
+    assert "recsize=96" in lib.log()
+
+
+def test_broken_filename_offsets_are_reported(tmp_path, capsys):
+    lib = build(tmp_path / "lib", 100)
+    idx = bytearray((lib.rb / "database_idx.tcd").read_bytes())
+    struct.pack_into("<i", idx, 24 + 7 * 96 + 4 * 4, 10_000_000)   # record 7's filename offset
+    (lib.rb / "database_idx.tcd").write_bytes(bytes(idx))
+    export(lib)
+    out = capsys.readouterr().out
+    assert "1 of 100 database entries point outside database_4.tcd" in out
+    assert (lib.rb / "rockgenius_bpm.bin").read_bytes()[8 + 7 * 4: 12 + 7 * 4] == b"\0\0\0\0"

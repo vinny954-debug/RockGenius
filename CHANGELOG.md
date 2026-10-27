@@ -3,6 +3,7 @@
 ## 3.0.0
 
 - Licensed under MIT.
+- The database record size now comes from the length of `database_idx.tcd`. The master header's `datasize` also counts every tag file, so dividing it by the entry count gave the wrong record size on real databases. Same fix in `bpm_export.py`, which also reports database entries that point outside `database_4.tcd`.
 - Play now starts the playlist itself with Rockbox's playlist API (`playlist_create`, then `playlist_start`). It no longer needs a patched Rockbox. It only falls back to writing `/.rockbox/rockgenius_play.txt` if that fails.
 - Genius from now playing has a submenu:
   - More like this

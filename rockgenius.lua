@@ -344,8 +344,11 @@ local function open_master()
   end
   local m = { f = f, datasize = rd32(hdr, 5), entries = rd32(hdr, 9),
               serial = rd32(hdr, 13), commit = rd32(hdr, 17) }
-  if m.entries > 0 and m.datasize > 0 then
-    local isz = idiv(m.datasize, m.entries)
+  -- Record size from the file length. The header's datasize also counts every
+  -- tag file (tagcache.c sizes the RAM cache with it), so it can't be used here.
+  local fsize = f:seek("end")
+  if m.entries > 0 and fsize and fsize > MASTER_HDR then
+    local isz = idiv(fsize - MASTER_HDR, m.entries)
     if isz >= 80 and isz <= 160 and isz % 4 == 0 and isz ~= IDX_SIZE then
       local old = TAG_COUNT
       IDX_SIZE = isz

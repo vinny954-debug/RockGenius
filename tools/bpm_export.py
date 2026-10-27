@@ -110,8 +110,10 @@ class Database:
                       canon=12, bitrate=13, length=14, playcount=15, rating=16,
                       playtime=17, lastplayed=18, commitid=19, mtime=20)
         self.tag_count, self.recsize = 23, 96
-        if self.entries > 0 and self.datasize > 0:
-            isz = idiv(self.datasize, self.entries)
+        # Record size from the file length, like open_master(). The header's
+        # datasize also counts every tag file, so it can't be used for this.
+        if self.entries > 0 and len(idx) > MASTER_HDR:
+            isz = idiv(len(idx) - MASTER_HDR, self.entries)
             if 80 <= isz <= 160 and isz % 4 == 0 and isz != self.recsize:
                 old = self.tag_count
                 self.recsize, self.tag_count = isz, (isz - 4) // 4
@@ -389,7 +391,7 @@ def build_bpm(db, mount, bpm_by_path, tag_read=True, progress=True):
     """Returns (file bytes, entries [(bpm, key)], stats)."""
     out = bytearray(BPM_MAGIC + struct.pack("<I", db.entries))
     entries = []
-    st = dict(report=0, tags=0, missing=0, deleted=0)
+    st = dict(report=0, tags=0, missing=0, deleted=0, broken=0)
     for r in range(db.entries):
         rec = db.record(r)
         ent = (0, 0)
@@ -408,6 +410,8 @@ def build_bpm(db, mount, bpm_by_path, tag_read=True, progress=True):
                 if not bpm:
                     st["missing"] += 1
                 ent = (clamp(bpm, 0, 255), h)
+            else:
+                st["broken"] += 1               # points outside database_4.tcd
         elif rec is not None:
             st["deleted"] += 1
         entries.append(ent)
@@ -483,6 +487,14 @@ def main(argv=None):
     write_atomic(dest, data)
     print(f"\r{db.entries} tracks in the player's database: {st['report']} BPM from report, "
           f"{st['tags']} from tags, {st['missing']} without BPM, {st['deleted']} deleted entries.")
+    if st["broken"]:
+        fn = db.tagfile(db.T["filename"]) or b""
+        print(f"\n!! {st['broken']} of {db.entries} database entries point outside database_4.tcd "
+              f"({len(fn):,} bytes).\n   The player's database is damaged or was mid-update. "
+              "Those tracks got no BPM.\n   Fix: check the player's drive for errors (Disk Utility > "
+              "First Aid on a Mac, right-click > Properties > Tools > Check on Windows, fsck on Linux),\n"
+              "   then on the player run Database > Initialize Now (not Update Now), let it finish, "
+              "and run this again.")
     print(f"Wrote {dest}")
 
     mood_dest = Path(a.mood_out) if a.mood_out else rbdir / "rockgenius_mood.bin"

@@ -418,6 +418,8 @@ Press Back at any step to cancel. The list is named after what you picked, leavi
 - Try another cable and another USB port, ideally one on the computer itself rather than a hub.
 - Then run the same command again. It resumes where it stopped.
 
+**bpm_export.py says entries "point outside database_4.tcd".** The player's database is damaged, or it was unplugged in the middle of an update. Check the player's drive for errors: Disk Utility > First Aid on a Mac; on Windows, right-click the drive > Properties > Tools > Check; on Linux, `fsck`. Then on the player run Settings > General Settings > Database > Initialize Now (not Update Now), let it finish, and run `bpm_export.py` again.
+
 **A playlist plays the wrong songs or "file not found".** The database is out of date: files were renamed, moved or deleted since the last update. Run Update Now and make the playlist again.
 
 **Where the log lives.** Every run writes `/.rockbox/rockgenius.log`, replacing the previous one. Each line shows the time, the Lua memory in use, and what it was doing. It's the first thing to attach to a bug report.

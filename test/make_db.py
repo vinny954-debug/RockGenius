@@ -131,8 +131,13 @@ def build(root, n=300, prefix="", layout="tree", untagged_every=0, seed=7,
         if i % 7 == 3:
             flag |= 0x80010000                  # attr bits set: the int is negative
         idx += struct.pack("<23i", *seek) + struct.pack("<I", flag)
+    # like tagcache.c: master header + all index entries + every tag file's data
+    # except the filename one. Readers must not use it as the record size.
+    tagdata = sum(os.path.getsize(os.path.join(rb, f"database_{k}.tcd")) - 12
+                  for k in range(13) if k != 4 and os.path.exists(os.path.join(rb, f"database_{k}.tcd")))
     with open(os.path.join(rb, "database_idx.tcd"), "wb") as f:
-        f.write(struct.pack("<iii", MAGIC, len(idx), len(tracks)) + struct.pack("<iii", 600, 3, 0))
+        f.write(struct.pack("<iii", MAGIC, 24 + len(idx) + tagdata, len(tracks)))
+        f.write(struct.pack("<iii", 600, 3, 0))
         f.write(idx)
 
     if audio:
