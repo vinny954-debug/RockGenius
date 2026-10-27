@@ -1,0 +1,27 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Cache the integer Lua build
+        uses: actions/cache@v4
+        with:
+          path: test/.build
+          key: intlua-${{ hashFiles('test/intlua/**') }}
+      - name: Install test dependencies
+        run: pip install -r test/requirements.txt
+      - name: Build Lua 5.1.5 with Rockbox's integer settings
+        run: sh test/intlua/build.sh
+      - name: Check the tools compile
+        run: python -m py_compile tools/*.py
+      - name: Run tests
+        run: python -m pytest test/ -v -s

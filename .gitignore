@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+test/.build/
+test/root/
+# files the BPM tools write next to where you run them
+bpm_report.csv
+bpm_done.txt
+bpm_journal.txt
+bpm_skiplist.txt
+# macOS / Windows junk
+.DS_Store
+._*
+Thumbs.db
